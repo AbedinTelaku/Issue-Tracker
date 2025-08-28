@@ -1,66 +1,235 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Issue Tracker - Laravel Technical Task
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Issue Tracker application built with Laravel for managing projects, issues, tags, and comments.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Core Functionality
+- **Projects**: Create, read, update, delete projects with start dates and deadlines
+- **Issues**: Full CRUD operations with status tracking, priority levels, and due dates
+- **Tags**: Color-coded tags with many-to-many relationships to issues
+- **Comments**: Add comments to issues with author tracking
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Advanced Features
+- **AJAX Operations**: Attach/detach tags and add comments without page reload
+- **Filtering**: Filter issues by status, priority, and tags
+- **Search**: Text search across issue titles and descriptions with debounce
+- **Responsive UI**: Bootstrap-based responsive design
+- **Data Relationships**: Proper Eloquent relationships with eager loading
+- **Form Validation**: Server-side validation using Form Request classes
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Database Schema
 
-## Learning Laravel
+### Tables
+- `projects` - Project information with start_date and deadline columns
+- `issues` - Issues belonging to projects with status, priority, and due dates
+- `tags` - Tags with unique names and optional colors
+- `comments` - Comments belonging to issues with author information
+- `issue_tag` - Pivot table for many-to-many relationship between issues and tags
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Relationships
+- Project has many Issues (1:N)
+- Issue belongs to Project (N:1)
+- Issue has many Comments (1:N)
+- Issue belongs to many Tags (N:M)
+- Tag belongs to many Issues (N:M)
+- Comment belongs to Issue (N:1)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Installation & Setup
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Prerequisites
+- PHP 8.1 or higher
+- Composer
+- Node.js & NPM
+- MySQL database
+- XAMPP (for local development)
 
-## Laravel Sponsors
+### Step 1: Database Setup
+1. Start XAMPP and ensure MySQL is running
+2. Open phpMyAdmin (http://localhost/phpmyadmin)
+3. Create a new database named `issue_tracker`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Step 2: Environment Configuration
+Create a `.env` file in the `issue-tracker` directory with the following content:
 
-### Premium Partners
+```env
+APP_NAME="Issue Tracker"
+APP_ENV=local
+APP_KEY=base64:YourAppKeyHere
+APP_DEBUG=true
+APP_URL=http://localhost
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+LOG_CHANNEL=stack
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
 
-## Contributing
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=issue_tracker
+DB_USERNAME=root
+DB_PASSWORD=
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
 
-## Code of Conduct
+VITE_APP_NAME="${APP_NAME}"
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Step 3: Install Dependencies & Setup
+Run these commands in the `issue-tracker` directory:
 
-## Security Vulnerabilities
+```bash
+# Install PHP dependencies
+composer install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Generate application key
+php artisan key:generate
 
-## License
+# Run database migrations
+php artisan migrate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Seed the database with sample data
+php artisan db:seed
+
+# Install and build frontend assets
+npm install
+npm run build
+```
+
+### Step 4: Start the Application
+```bash
+# Start the Laravel development server
+php artisan serve
+```
+
+The application will be available at http://localhost:8000
+
+## Usage Guide
+
+### Projects
+- Navigate to Projects section to view all projects
+- Create new projects with name, description, start date, and deadline
+- View project details to see associated issues and statistics
+- Edit or delete existing projects
+
+### Issues
+- Access Issues section to view all issues with filtering options
+- Filter by status (Open, In Progress, Closed), priority (Low, Medium, High), or tags
+- Search issues by title or description with real-time debounce
+- Create new issues and assign them to projects
+- Add tags and set due dates
+
+### Tags
+- Manage tags in the Tags section
+- Create color-coded tags with unique names
+- View tag usage statistics
+- Edit tag colors and names
+
+### Issue Management
+- View issue details with project information, tags, and comments
+- Attach/detach tags using AJAX (no page reload)
+- Add comments with author name and message
+- Comments load with pagination via AJAX
+
+## Technical Implementation
+
+### Architecture
+- **MVC Pattern**: Controllers handle business logic, Models define relationships, Views present data
+- **Resource Controllers**: RESTful controllers for CRUD operations
+- **Form Requests**: Centralized validation logic
+- **Eloquent ORM**: Database relationships and query optimization
+- **AJAX Integration**: Seamless user experience for dynamic operations
+
+### Key Features
+- **Eager Loading**: Prevents N+1 query problems
+- **Query Scopes**: Reusable query logic in models
+- **Validation**: Server-side validation with error handling
+- **CSRF Protection**: Built-in security for forms and AJAX requests
+- **Responsive Design**: Bootstrap 5 for mobile-friendly interface
+
+### File Structure
+```
+issue-tracker/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/     # Resource controllers
+│   │   └── Requests/        # Form validation
+│   └── Models/              # Eloquent models
+├── database/
+│   ├── factories/           # Model factories for testing
+│   ├── migrations/          # Database schema
+│   └── seeders/             # Sample data
+├── resources/
+│   └── views/               # Blade templates
+├── routes/
+│   └── web.php              # Application routes
+└── public/                  # Public assets
+```
+
+## API Endpoints
+
+### RESTful Routes
+- `GET /projects` - List projects
+- `POST /projects` - Create project
+- `GET /projects/{id}` - Show project
+- `PUT /projects/{id}` - Update project
+- `DELETE /projects/{id}` - Delete project
+
+Similar patterns for issues, tags, and comments.
+
+### AJAX Endpoints
+- `POST /issues/{issue}/tags/attach` - Attach tag to issue
+- `DELETE /issues/{issue}/tags/detach` - Detach tag from issue
+- `GET /issues/{issue}/comments` - Load comments with pagination
+- `POST /comments` - Add new comment
+
+## Sample Data
+
+The seeder creates:
+- 5 sample projects with realistic names and descriptions
+- 10 predefined tags with various colors
+- 15-40 issues distributed across projects
+- Random comments on issues
+- Many-to-many relationships between issues and tags
+
+## Development Notes
+
+### Code Quality
+- PSR-4 autoloading
+- Proper error handling and validation
+- Clean, readable code with comments
+- Consistent naming conventions
+
+### Security
+- CSRF token protection
+- Input validation and sanitization
+- SQL injection prevention via Eloquent ORM
+- XSS protection in Blade templates
+
+### Performance
+- Database indexing on foreign keys
+- Eager loading to prevent N+1 queries
+- Efficient pagination
+- Optimized AJAX requests
+
+## Browser Support
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+- Responsive design for mobile devices
+- Progressive enhancement with JavaScript
+
+## Future Enhancements
+- User authentication and authorization
+- Email notifications
+- File attachments
+- Time tracking
+- Advanced reporting
+- API for mobile applications
+
+---
+
+This Issue Tracker demonstrates modern Laravel development practices with clean code, proper relationships, AJAX integration, and responsive design.
