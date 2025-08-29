@@ -39,6 +39,8 @@
         .pagination {
             gap: 0.25rem;
             margin: 2rem 0;
+            justify-content: center; /* Center pagination */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
         }
         
         .pagination .page-link {
@@ -51,6 +53,8 @@
             transition: all 0.2s ease-in-out;
             min-width: 40px;
             text-align: center;
+            position: relative; /* For animation */
+            overflow: hidden; /* For animation */
         }
         
         .pagination .page-link:hover {
@@ -66,6 +70,7 @@
             border-color: #0d6efd;
             color: #fff;
             box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+            font-weight: 700;
         }
         
         .pagination .page-item.disabled .page-link {
@@ -73,77 +78,10 @@
             background-color: #f8f9fa;
             border-color: #dee2e6;
             cursor: not-allowed;
+            pointer-events: none; /* Disable clicks */
         }
         
-        .pagination .page-item:first-child .page-link,
-        .pagination .page-item:last-child .page-link {
-            border-radius: 0.375rem;
-        }
-        
-        /* Style page numbers only */
-        .pagination .page-item:not(:first-child):not(:last-child) .page-link {
-            font-weight: 600;
-            min-width: 45px;
-        }
-        
-        /* Center pagination better */
-        .pagination {
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        /* Better spacing between page numbers */
-        .pagination .page-item:not(:first-child):not(:last-child) {
-            margin: 0 2px;
-        }
-        
-        /* Active page styling */
-        .pagination .page-item.active .page-link {
-            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-            border-color: #0a58ca;
-            font-weight: 700;
-        }
-        
-        /* Hover effect for page numbers */
-        .pagination .page-item:not(:first-child):not(:last-child) .page-link:hover {
-            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-            border-color: #adb5bd;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-        
-        /* Pagination Info */
-        .pagination-info {
-            text-align: center;
-            margin: 1rem 0;
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-        
-        .pagination-info strong {
-            color: #495057;
-        }
-        
-        /* Responsive pagination */
-        @media (max-width: 576px) {
-            .pagination {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .pagination .page-link {
-                padding: 0.375rem 0.5rem;
-                font-size: 0.875rem;
-                min-width: 35px;
-            }
-        }
-        
-        /* Enhanced pagination animations */
-        .pagination .page-link {
-            position: relative;
-            overflow: hidden;
-        }
-        
+        /* Animation effect */
         .pagination .page-link::before {
             content: '';
             position: absolute;
@@ -159,13 +97,16 @@
             left: 100%;
         }
         
-        /* Pagination container styling */
-        .pagination-container {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        /* Pagination Info */
+        .pagination-info {
+            text-align: center;
+            margin: 1rem 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .pagination-info strong {
+            color: #495057;
         }
         
         /* Quick navigation styling */
@@ -182,12 +123,35 @@
             color: #0d6efd;
             font-weight: 500;
             transition: all 0.2s ease;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
         }
         
         .quick-nav a:hover {
             color: #0a58ca;
             text-decoration: none;
             transform: translateY(-1px);
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .quick-nav .bi {
+            font-size: 0.875rem;
+            margin: 0 0.25rem;
+        }
+
+        /* Responsive pagination */
+        @media (max-width: 576px) {
+            .pagination {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .pagination .page-link {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.875rem;
+                min-width: 35px;
+            }
         }
     </style>
 
@@ -263,6 +227,8 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        
+        // Remove the JavaScript hideAllPaginationArrows function
     </script>
 
     @stack('scripts')

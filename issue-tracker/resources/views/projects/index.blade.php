@@ -84,12 +84,12 @@
             </nav>
         </div>
         
-        <!-- Quick Navigation -->
+        <!-- Quick Navigation with Previous/Next -->
         <div class="quick-nav text-center">
             <small class="text-muted">
                 @if($projects->currentPage() > 1)
                     <a href="{{ $projects->previousPageUrl() }}" class="text-decoration-none">
-                        Previous page
+                        <i class="bi bi-arrow-left"></i> Previous page
                     </a>
                 @endif
                 
@@ -98,7 +98,7 @@
                         <span class="mx-2">•</span>
                     @endif
                     <a href="{{ $projects->nextPageUrl() }}" class="text-decoration-none">
-                        Next page
+                        Next page <i class="bi bi-arrow-right"></i>
                     </a>
                 @endif
             </small>
