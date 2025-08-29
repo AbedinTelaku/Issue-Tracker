@@ -45,6 +45,28 @@
                 </div>
             </div>
 
+            <!-- Assigned Users Section -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Assigned Members</h6>
+                    <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#userModal">
+                        <i class="bi bi-people"></i> Manage Members
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div id="assigned-users">
+                        @forelse($issue->assignedUsers as $user)
+                            <span class="badge bg-info me-2 mb-2" data-user-id="{{ $user->id }}">
+                                <i class="bi bi-person"></i> {{ $user->name }}
+                                <button type="button" class="btn-close btn-close-white ms-1" aria-label="Unassign user" onclick="unassignUser({{ $user->id }})"></button>
+                            </span>
+                        @empty
+                            <p class="text-muted mb-0" id="no-users">No users assigned yet.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
             <!-- Tags Section -->
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -200,6 +222,32 @@
     </div>
 </div>
 
+<!-- User Assignment Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">Manage Assigned Members</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Available Users</h6>
+                <div id="available-users">
+                    @foreach($allUsers as $user)
+                        @if(!$issue->assignedUsers->contains($user->id))
+                            <span class="badge bg-outline-info me-2 mb-2" style="cursor: pointer; border: 1px solid #0dcaf0;" 
+                                  data-user-id="{{ $user->id }}" onclick="assignUser({{ $user->id }})">
+                                <i class="bi bi-person"></i> {{ $user->name }}
+                                <i class="bi bi-plus-circle ms-1"></i>
+                            </span>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
 <script>
     // Tag Management Functions
@@ -348,6 +396,68 @@
             }
         });
     });
+
+    // User Assignment Functions
+    function assignUser(userId) {
+        $.post('{{ route("issues.users.assign", $issue) }}', {
+            user_id: userId
+        })
+        .done(function(data) {
+            if (data.success) {
+                // Remove from available users
+                $(`#available-users span[data-user-id="${userId}"]`).remove();
+                
+                // Add to assigned users
+                $('#no-users').remove();
+                $('#assigned-users').append(`
+                    <span class="badge bg-info me-2 mb-2" data-user-id="${data.user.id}">
+                        <i class="bi bi-person"></i> ${data.user.name}
+                        <button type="button" class="btn-close btn-close-white ms-1" aria-label="Unassign user" onclick="unassignUser(${data.user.id})"></button>
+                    </span>
+                `);
+                
+                showAlert('success', data.message);
+            }
+        })
+        .fail(function(xhr) {
+            showAlert('danger', xhr.responseJSON?.message || 'Failed to assign user');
+        });
+    }
+
+    function unassignUser(userId) {
+        $.ajax({
+            url: '{{ route("issues.users.unassign", $issue) }}',
+            method: 'DELETE',
+            data: { user_id: userId }
+        })
+        .done(function(data) {
+            if (data.success) {
+                // Remove from assigned users
+                const userElement = $(`#assigned-users span[data-user-id="${userId}"]`);
+                const userName = userElement.text().trim();
+                userElement.remove();
+                
+                // Check if no users left
+                if ($('#assigned-users span').length === 0) {
+                    $('#assigned-users').html('<p class="text-muted mb-0" id="no-users">No users assigned yet.</p>');
+                }
+                
+                // Add back to available users in modal
+                $('#available-users').append(`
+                    <span class="badge bg-outline-info me-2 mb-2" style="cursor: pointer; border: 1px solid #0dcaf0;" 
+                          data-user-id="${userId}" onclick="assignUser(${userId})">
+                        <i class="bi bi-person"></i> ${userName}
+                        <i class="bi bi-plus-circle ms-1"></i>
+                    </span>
+                `);
+                
+                showAlert('success', data.message);
+            }
+        })
+        .fail(function() {
+            showAlert('danger', 'Failed to unassign user');
+        });
+    }
 
     // Alert helper function
     function showAlert(type, message) {

@@ -31,6 +31,10 @@ Route::resource('tags', TagController::class);
 Route::post('issues/{issue}/tags/attach', [IssueController::class, 'attachTag'])->name('issues.tags.attach');
 Route::delete('issues/{issue}/tags/detach', [IssueController::class, 'detachTag'])->name('issues.tags.detach');
 
+// AJAX routes for user assignment
+Route::post('issues/{issue}/users/assign', [IssueController::class, 'assignUser'])->name('issues.users.assign');
+Route::delete('issues/{issue}/users/unassign', [IssueController::class, 'unassignUser'])->name('issues.users.unassign');
+
 // AJAX routes for comments
 Route::get('issues/{issue}/comments', [CommentController::class, 'index'])->name('issues.comments.index');
 Route::post('comments', [CommentController::class, 'store'])->name('comments.store');

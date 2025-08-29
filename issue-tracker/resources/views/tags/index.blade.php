@@ -73,8 +73,38 @@
     </div>
 
     @if($tags->hasPages())
-        <div class="d-flex justify-content-center">
-            {{ $tags->links() }}
+        <!-- Pagination Info -->
+        <div class="pagination-info">
+            <strong>Showing {{ $tags->firstItem() ?? 0 }} to {{ $tags->lastItem() ?? 0 }} of {{ $tags->total() }} tags</strong>
+        </div>
+        
+        <!-- Enhanced Pagination Container -->
+        <div class="pagination-container">
+            <div class="d-flex justify-content-center">
+                <nav aria-label="Tags pagination">
+                    {{ $tags->links() }}
+                </nav>
+            </div>
+            
+            <!-- Quick Navigation -->
+            <div class="quick-nav text-center">
+                <small class="text-muted">
+                    @if($tags->currentPage() > 1)
+                        <a href="{{ $tags->previousPageUrl() }}" class="text-decoration-none">
+                            Previous page
+                        </a>
+                    @endif
+                    
+                    @if($tags->currentPage() < $tags->lastPage())
+                        @if($tags->currentPage() > 1)
+                            <span class="mx-2">•</span>
+                        @endif
+                        <a href="{{ $tags->nextPageUrl() }}" class="text-decoration-none">
+                            Next page
+                        </a>
+                    @endif
+                </small>
+            </div>
         </div>
     @endif
 </div>

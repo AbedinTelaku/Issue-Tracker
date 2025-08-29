@@ -71,8 +71,38 @@
 </div>
 
 @if($projects->hasPages())
-    <div class="d-flex justify-content-center">
-        {{ $projects->links() }}
+    <!-- Pagination Info -->
+    <div class="pagination-info">
+        <strong>Showing {{ $projects->firstItem() ?? 0 }} to {{ $projects->lastItem() ?? 0 }} of {{ $projects->total() }} projects</strong>
+    </div>
+    
+    <!-- Enhanced Pagination Container -->
+    <div class="pagination-container">
+        <div class="d-flex justify-content-center">
+            <nav aria-label="Projects pagination">
+                {{ $projects->links() }}
+            </nav>
+        </div>
+        
+        <!-- Quick Navigation -->
+        <div class="quick-nav text-center">
+            <small class="text-muted">
+                @if($projects->currentPage() > 1)
+                    <a href="{{ $projects->previousPageUrl() }}" class="text-decoration-none">
+                        Previous page
+                    </a>
+                @endif
+                
+                @if($projects->currentPage() < $projects->lastPage())
+                    @if($projects->currentPage() > 1)
+                        <span class="mx-2">•</span>
+                    @endif
+                    <a href="{{ $projects->nextPageUrl() }}" class="text-decoration-none">
+                        Next page
+                    </a>
+                @endif
+            </small>
+        </div>
     </div>
 @endif
 @endsection

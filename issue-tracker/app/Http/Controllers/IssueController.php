@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Models\Tag;
+use App\Models\User;
 use App\Http\Requests\IssueRequest;
 use Illuminate\Http\Request;
 
@@ -76,13 +77,14 @@ class IssueController extends Controller
      */
     public function show(Issue $issue)
     {
-        $issue->load(['project', 'tags', 'comments' => function ($query) {
+        $issue->load(['project', 'tags', 'assignedUsers', 'comments' => function ($query) {
             $query->latest();
         }]);
 
         $allTags = Tag::all();
+        $allUsers = User::all();
 
-        return view('issues.show', compact('issue', 'allTags'));
+        return view('issues.show', compact('issue', 'allTags', 'allUsers'));
     }
 
     /**
@@ -167,6 +169,49 @@ class IssueController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Tag detached successfully'
+        ]);
+    }
+
+    /**
+     * Assign a user to an issue via AJAX.
+     */
+    public function assignUser(Request $request, Issue $issue)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        if (!$issue->assignedUsers()->where('user_id', $request->user_id)->exists()) {
+            $issue->assignedUsers()->attach($request->user_id);
+            $user = User::find($request->user_id);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'User assigned successfully',
+                'user' => $user
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'User is already assigned to this issue'
+        ], 422);
+    }
+
+    /**
+     * Unassign a user from an issue via AJAX.
+     */
+    public function unassignUser(Request $request, Issue $issue)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        $issue->assignedUsers()->detach($request->user_id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User unassigned successfully'
         ]);
     }
 }

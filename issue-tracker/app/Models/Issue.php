@@ -50,6 +50,14 @@ class Issue extends Model
     }
 
     /**
+     * The users assigned to the issue.
+     */
+    public function assignedUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
+
+    /**
      * Scope a query to only include issues with specific status.
      */
     public function scopeByStatus($query, $status)

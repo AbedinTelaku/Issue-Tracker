@@ -151,8 +151,38 @@
     </div>
 
     @if($issues->hasPages())
-        <div class="d-flex justify-content-center">
-            {{ $issues->appends(request()->query())->links() }}
+        <!-- Pagination Info -->
+        <div class="pagination-info">
+            <strong>Showing {{ $issues->firstItem() ?? 0 }} to {{ $issues->lastItem() ?? 0 }} of {{ $issues->total() }} results</strong>
+        </div>
+        
+        <!-- Enhanced Pagination Container -->
+        <div class="pagination-container">
+            <div class="d-flex justify-content-center">
+                <nav aria-label="Issues pagination">
+                    {{ $issues->appends(request()->query())->links() }}
+                </nav>
+            </div>
+            
+            <!-- Quick Navigation -->
+            <div class="quick-nav text-center">
+                <small class="text-muted">
+                    @if($issues->currentPage() > 1)
+                        <a href="{{ $issues->previousPageUrl() }}" class="text-decoration-none">
+                            Previous page
+                        </a>
+                    @endif
+                    
+                    @if($issues->currentPage() < $issues->lastPage())
+                        @if($issues->currentPage() > 1)
+                            <span class="mx-2">•</span>
+                        @endif
+                        <a href="{{ $issues->nextPageUrl() }}" class="text-decoration-none">
+                            Next page
+                        </a>
+                    @endif
+                </small>
+            </div>
         </div>
     @endif
 </div>
